@@ -1,0 +1,509 @@
+{
+  "01": {
+    "z1": {
+      "seqs": [
+        [
+          "○",
+          "●",
+          "○",
+          "●",
+          "○"
+        ],
+        [
+          "●",
+          "○",
+          "●",
+          "○",
+          "●"
+        ],
+        [
+          "○",
+          "●",
+          "●",
+          "●",
+          "○"
+        ]
+      ],
+      "ruleHint": "Symmetric harmonic reflection pulse",
+      "expected": [
+        "●",
+        "●",
+        "○",
+        "●",
+        "●"
+      ]
+    },
+    "z2": {
+      "word": "VECTOR",
+      "morse": "...- . -.-. - --- .-."
+    },
+    "z3": {
+      "targetBits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "targetString": "01101111",
+      "riddleLines": [
+        "Node 1 lies dormant in the dark.",
+        "The adjacent second sentinel is energized.",
+        "In the lower quad, gate 3 is broadcasting photon flux, while gate 4 sleeps.",
+        "The fifth beacon glows in amber parity.",
+        "Position 6 stands illuminated, followed by seventh live.",
+        "Finally, the terminal eighth diode holds the final flame."
+      ],
+      "buttonMappings": {
+        "A": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "B": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "C": [
+          1,
+          6,
+          7
+        ],
+        "D": [
+          2,
+          4,
+          5
+        ]
+      },
+      "choice": {
+        "name": "C + D",
+        "pressed": [
+          "C",
+          "D"
+        ]
+      }
+    },
+    "z4": {
+      "kw": "PRISM",
+      "hexStr": "50 52 49 53 4D",
+      "stage1Prompt": "HEX: 50 52 49 53 4D",
+      "stage1Binary": "01001000 01000101 01011000 00111010 00100000 00110101 00110000 00100000 00110101 00110010 00100000 00110100 00111001 00100000 00110101 00110011 00100000 00110100 01000100"
+    },
+    "z5": {
+      "kernelHash": "0xBX01",
+      "freq": "1475",
+      "activationToken": "0xBX01-1475"
+    }
+  },
+  "02": {
+    "z1": {
+      "seqs": [
+        [
+          "●",
+          "●",
+          "○",
+          "○",
+          "●"
+        ],
+        [
+          "○",
+          "●",
+          "●",
+          "○",
+          "○"
+        ],
+        [
+          "○",
+          "○",
+          "●",
+          "●",
+          "○"
+        ]
+      ],
+      "ruleHint": "Cascading cyclic delay right-shift register",
+      "expected": [
+        "○",
+        "○",
+        "○",
+        "●",
+        "●"
+      ]
+    },
+    "z2": {
+      "word": "FLUX",
+      "morse": "..-. .-.. ..- -..-"
+    },
+    "z3": {
+      "targetBits": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "targetString": "11111111",
+      "riddleLines": [
+        "Node 1 burns with active power.",
+        "The adjacent second sentinel is energized.",
+        "In the lower quad, gate 3 is broadcasting photon flux, while gate 4 awakens.",
+        "The fifth beacon glows in amber parity.",
+        "Position 6 stands illuminated, followed by seventh live.",
+        "Finally, the terminal eighth diode holds the final flame."
+      ],
+      "buttonMappings": {
+        "A": [
+          0,
+          2,
+          6
+        ],
+        "B": [
+          3,
+          5,
+          7
+        ],
+        "C": [
+          0,
+          1,
+          6,
+          7
+        ],
+        "D": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "choice": {
+        "name": "C + D",
+        "pressed": [
+          "C",
+          "D"
+        ]
+      }
+    },
+    "z4": {
+      "kw": "CORE",
+      "hexStr": "43 4F 52 45",
+      "stage1Prompt": "HEX: 43 4F 52 45",
+      "stage1Binary": "01001000 01000101 01011000 00111010 00100000 00110100 00110011 00100000 00110100 01000110 00100000 00110101 00110010 00100000 00110100 00110101"
+    },
+    "z5": {
+      "kernelHash": "0xBX02",
+      "freq": "1448",
+      "activationToken": "0xBX02-1448"
+    }
+  },
+  "03": {
+    "z1": {
+      "seqs": [
+        [
+          "●",
+          "●",
+          "●",
+          "○",
+          "○"
+        ],
+        [
+          "○",
+          "●",
+          "●",
+          "●",
+          "○"
+        ],
+        [
+          "○",
+          "○",
+          "●",
+          "●",
+          "●"
+        ]
+      ],
+      "ruleHint": "High-density sliding window oscillator",
+      "expected": [
+        "●",
+        "○",
+        "○",
+        "●",
+        "●"
+      ]
+    },
+    "z2": {
+      "word": "SYNTH",
+      "morse": "... -.-- -. - ...."
+    },
+    "z3": {
+      "targetBits": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "targetString": "10110100",
+      "riddleLines": [
+        "Node 1 burns with active power.",
+        "The adjacent second sentinel remains extinguished.",
+        "In the lower quad, gate 3 is broadcasting photon flux, while gate 4 awakens.",
+        "The fifth beacon is grounded to void.",
+        "Position 6 stands illuminated, followed by seventh dark.",
+        "Finally, the terminal eighth diode has lost all current."
+      ],
+      "buttonMappings": {
+        "A": [
+          0,
+          2,
+          4
+        ],
+        "B": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "C": [
+          0,
+          1,
+          6,
+          7
+        ],
+        "D": [
+          3,
+          4,
+          5
+        ]
+      },
+      "choice": {
+        "name": "A + D",
+        "pressed": [
+          "A",
+          "D"
+        ]
+      }
+    },
+    "z4": {
+      "kw": "CYBER",
+      "hexStr": "43 59 42 45 52",
+      "stage1Prompt": "HEX: 43 59 42 45 52",
+      "stage1Binary": "01001000 01000101 01011000 00111010 00100000 00110100 00110011 00100000 00110101 00111001 00100000 00110100 00110010 00100000 00110100 00110101 00100000 00110101 00110010"
+    },
+    "z5": {
+      "kernelHash": "0xBX03",
+      "freq": "1499",
+      "activationToken": "0xBX03-1499"
+    }
+  },
+  "04": {
+    "z1": {
+      "seqs": [
+        [
+          "○",
+          "●",
+          "○",
+          "●",
+          "○"
+        ],
+        [
+          "●",
+          "○",
+          "●",
+          "○",
+          "●"
+        ],
+        [
+          "○",
+          "●",
+          "●",
+          "●",
+          "○"
+        ]
+      ],
+      "ruleHint": "Symmetric harmonic reflection pulse",
+      "expected": [
+        "●",
+        "●",
+        "○",
+        "●",
+        "●"
+      ]
+    },
+    "z2": {
+      "word": "CARRIER",
+      "morse": "-.-. .- .-. .-. .. . .-."
+    },
+    "z3": {
+      "targetBits": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "targetString": "01111001",
+      "riddleLines": [
+        "Node 1 lies dormant in the dark.",
+        "The adjacent second sentinel is energized.",
+        "In the lower quad, gate 3 is broadcasting photon flux, while gate 4 awakens.",
+        "The fifth beacon glows in amber parity.",
+        "Position 6 stands suppressed, followed by seventh dark.",
+        "Finally, the terminal eighth diode holds the final flame."
+      ],
+      "buttonMappings": {
+        "A": [
+          2,
+          4,
+          6
+        ],
+        "B": [
+          1,
+          5,
+          7
+        ],
+        "C": [
+          0,
+          1,
+          6
+        ],
+        "D": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "choice": {
+        "name": "B + D",
+        "pressed": [
+          "B",
+          "D"
+        ]
+      }
+    },
+    "z4": {
+      "kw": "CORE",
+      "hexStr": "43 4F 52 45",
+      "stage1Prompt": "HEX: 43 4F 52 45",
+      "stage1Binary": "01001000 01000101 01011000 00111010 00100000 00110100 00110011 00100000 00110100 01000110 00100000 00110101 00110010 00100000 00110100 00110101"
+    },
+    "z5": {
+      "kernelHash": "0xBX04",
+      "freq": "1428",
+      "activationToken": "0xBX04-1428"
+    }
+  },
+  "05": {
+    "z1": {
+      "seqs": [
+        [
+          "●",
+          "●",
+          "●",
+          "○",
+          "○"
+        ],
+        [
+          "○",
+          "●",
+          "●",
+          "●",
+          "○"
+        ],
+        [
+          "○",
+          "○",
+          "●",
+          "●",
+          "●"
+        ]
+      ],
+      "ruleHint": "High-density sliding window oscillator",
+      "expected": [
+        "●",
+        "○",
+        "○",
+        "●",
+        "●"
+      ]
+    },
+    "z2": {
+      "word": "CARRIER",
+      "morse": "-.-. .- .-. .-. .. . .-."
+    },
+    "z3": {
+      "targetBits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "targetString": "01101000",
+      "riddleLines": [
+        "Node 1 lies dormant in the dark.",
+        "The adjacent second sentinel is energized.",
+        "In the lower quad, gate 3 is broadcasting photon flux, while gate 4 sleeps.",
+        "The fifth beacon glows in amber parity.",
+        "Position 6 stands suppressed, followed by seventh dark.",
+        "Finally, the terminal eighth diode has lost all current."
+      ],
+      "buttonMappings": {
+        "A": [
+          2,
+          4
+        ],
+        "B": [
+          1,
+          3,
+          5
+        ],
+        "C": [
+          0,
+          6,
+          7
+        ],
+        "D": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "choice": {
+        "name": "B + D",
+        "pressed": [
+          "B",
+          "D"
+        ]
+      }
+    },
+    "z4": {
+      "kw": "PRISM",
+      "hexStr": "50 52 49 53 4D",
+      "stage1Prompt": "HEX: 50 52 49 53 4D",
+      "stage1Binary": "01001000 01000101 01011000 00111010 00100000 00110101 00110000 00100000 00110101 00110010 00100000 00110100 00111001 00100000 00110101 00110011 00100000 00110100 01000100"
+    },
+    "z5": {
+      "kernelHash": "0xBX05",
+      "freq": "1437",
+      "activationToken": "0xBX05-1437"
+    }
+  }
+}

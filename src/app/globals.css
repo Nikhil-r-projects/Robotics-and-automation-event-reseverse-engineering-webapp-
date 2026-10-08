@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-void: #0b0e14;
+    --bg-surface: #121722;
+    --bg-elevated: #182030;
+    --bg-panel: #1d2535;
+    
+    --border-frame: #232b3e;
+    --border-grid: #1a2234;
+    --border-highlight: rgba(255, 122, 0, 0.35);
+
+    --text-primary: #ffffff;
+    --text-standard: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-inactive: #64748b;
+
+    --amber-core: #ff7a00;
+    --amber-bright: #ff9933;
+    --amber-glow: rgba(255, 122, 0, 0.25);
+
+    --cyan-core: #00f0ff;
+    --cyan-glow: rgba(0, 240, 255, 0.2);
+
+    --emerald-core: #10b981;
+    --emerald-glow: rgba(16, 185, 129, 0.2);
+
+    --crimson-core: #ef4444;
+    --crimson-glow: rgba(239, 68, 68, 0.25);
+
+    --steel-locked: #4b5563;
+  }
+
+  body {
+    background-color: var(--bg-void);
+    color: var(--text-standard);
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-space), sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono), monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Background Technical Circuit Grid */
+.technical-grid {
+  background-color: var(--bg-void);
+  background-image: 
+    linear-gradient(var(--border-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 23, 34, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+}
+
+/* Subtle amber & cyan glow utility */
+.glow-amber {
+  box-shadow: 0 0 20px rgba(255, 122, 0, 0.25);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.glow-crimson {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+/* CRT monitor subtle border & corner chamfer */
+.chassis-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-frame);
+  position: relative;
+}
+
+.chassis-panel::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--amber-core);
+  border-right: 2px solid var(--amber-core);
+  pointer-events: none;
+}
+
+.chassis-panel::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 12px;
+  height: 12px;
+  border-bottom: 2px solid var(--border-frame);
+  border-left: 2px solid var(--border-frame);
+  pointer-events: none;
+}
+
+/* Custom Scrollbar for Terminals */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0e14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232b3e;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff7a00;
+}
