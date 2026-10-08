@@ -7,3 +7,5 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # These values are public by design and are inlined into the client bundle by Next.js
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
