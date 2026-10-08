@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   const challenges = competitionEngine.getTeamChallenges(session.team_id);
-  const overview = competitionEngine.getAdminLiveOverview();
+  const overview = await competitionEngine.getAdminLiveOverview();
   const team = overview.teams.find((t) => t.id === session.team_id);
 
   return NextResponse.json({

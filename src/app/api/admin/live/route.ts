@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, error: "Admin unauthorized" }, { status: 401 });
   }
 
-  const liveData = competitionEngine.getAdminLiveOverview();
+  const liveData = await competitionEngine.getAdminLiveOverview();
   return NextResponse.json({
     success: true,
     ...liveData,

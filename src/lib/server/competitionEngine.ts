@@ -19,7 +19,14 @@ import {
   generateZ5,
 } from "../challenges/seedGenerator";
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const isServerless = Boolean(
+  process.env.NETLIFY ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.VERCEL
+);
+const DATA_DIR = isServerless
+  ? path.join(process.env.TMPDIR || "/tmp", ".data")
+  : path.join(process.cwd(), ".data");
 const DATA_FILE = path.join(DATA_DIR, "competition_state.json");
 
 interface CompetitionStore {
@@ -170,6 +177,29 @@ class CompetitionEngine {
       this.syncToSupabaseAsync(dataToSave);
     } catch (e) {
       console.error("Failed to persist state:", e);
+    }
+  }
+
+  public async hydrateFromSupabaseAsync() {
+    try {
+      const client = getSupabaseServerClient();
+      if (!client) return;
+
+      const { data: teamsData, error } = await client.from("teams").select("*");
+      if (error || !teamsData || teamsData.length === 0) return;
+
+      teamsData.forEach((row) => {
+        const matchingTeam = Object.values(this.store.teams).find(
+          (t) => t.team_number === row.team_number
+        );
+        if (matchingTeam) {
+          if (typeof row.total_score === "number") matchingTeam.total_score = row.total_score;
+          if (row.status) matchingTeam.status = row.status;
+          if (row.team_name) matchingTeam.team_name = row.team_name;
+        }
+      });
+    } catch {
+      // Non-blocking
     }
   }
 
@@ -789,7 +819,8 @@ class CompetitionEngine {
     return { success: true, challenge: ch };
   }
 
-  public getAdminLiveOverview() {
+  public async getAdminLiveOverview() {
+    await this.hydrateFromSupabaseAsync();
     return {
       teams: Object.values(this.store.teams),
       challenges: this.store.challenges,
