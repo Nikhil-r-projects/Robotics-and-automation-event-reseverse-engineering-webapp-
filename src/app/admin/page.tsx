@@ -123,6 +123,58 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Restart Team (Wipes progress back to 0 PTS for live event)
+  const [restartingTeamId, setRestartingTeamId] = useState<string | null>(null);
+
+  const handleRestartTeam = async (teamId: string, teamName: string) => {
+    const ok = confirm(
+      `⚠️ ARE YOU SURE YOU WANT TO RESTART GAME FOR "${teamName.toUpperCase()}"?\n\n` +
+      `This will reset their score to 0 PTS, unlock initial zones Z1-Z3, clear active sessions, and reset all challenge progress so they can start fresh.`
+    );
+    if (!ok) return;
+
+    setRestartingTeamId(teamId);
+    try {
+      const res = await fetch("/api/admin/restart-team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchLive();
+      } else {
+        alert(data.error || "Failed to restart team.");
+      }
+    } catch (err) {
+      console.error("Restart team error:", err);
+    } finally {
+      setRestartingTeamId(null);
+    }
+  };
+
+  const handleRestartAllTeams = async () => {
+    const ok = confirm(
+      "⚠️ MASTER RESET ALL TEAMS:\n\n" +
+      "Are you sure you want to reset ALL 5 TEAMS to 0 PTS?\n" +
+      "This will clear all test activity and restore every team's initial zones for the official live event."
+    );
+    if (!ok) return;
+
+    for (const t of teams) {
+      try {
+        await fetch("/api/admin/restart-team", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ teamId: t.id }),
+        });
+      } catch (err) {
+        console.error("Reset all error for team:", t.id, err);
+      }
+    }
+    await fetchLive();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0b0e14] text-[#00f0ff] font-mono text-sm">
@@ -148,14 +200,23 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono">
-            <span className="flex items-center gap-2 text-[#10b981]">
+          <div className="flex items-center gap-3 text-xs font-mono">
+            <span className="hidden sm:flex items-center gap-2 text-[#10b981]">
               <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
               LIVE MONITORING
             </span>
             <button
+              onClick={handleRestartAllTeams}
+              className="px-2.5 py-1.5 rounded bg-[#ef4444]/15 hover:bg-[#ef4444]/30 border border-[#ef4444]/40 text-[#ef4444] font-bold text-[10px] uppercase transition-colors inline-flex items-center gap-1.5"
+              title="Reset all 5 teams to 0 points"
+            >
+              <RotateCcw className="w-3 h-3" />
+              RESET ALL TEAMS
+            </button>
+            <button
               onClick={fetchLive}
               className="p-1.5 rounded bg-[#182030] hover:bg-[#232b3e] text-[#94a3b8] hover:text-white transition-colors"
+              title="Refresh telemetry"
             >
               <RefreshCw className="w-3.5 h-3.5" />
             </button>
@@ -259,6 +320,15 @@ export default function AdminDashboardPage() {
                           className="px-2.5 py-1.5 rounded bg-[#182030] hover:bg-[#232b3e] border border-[#232b3e] text-[10px] text-[#ff7a00] uppercase transition-colors"
                         >
                           ADJUST SCORE
+                        </button>
+                        <button
+                          onClick={() => handleRestartTeam(t.id, t.team_name)}
+                          disabled={restartingTeamId === t.id}
+                          className="px-2.5 py-1.5 rounded bg-[#ef4444]/15 hover:bg-[#ef4444]/30 border border-[#ef4444]/40 text-[10px] text-[#ef4444] font-bold uppercase transition-colors inline-flex items-center gap-1.5"
+                          title="Reset team score to 0 PTS and unlock initial challenges for new game"
+                        >
+                          <RotateCcw className={`w-3 h-3 ${restartingTeamId === t.id ? "animate-spin" : ""}`} />
+                          RESTART GAME
                         </button>
                       </td>
                     </tr>

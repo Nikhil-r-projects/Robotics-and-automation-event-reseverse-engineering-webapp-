@@ -819,6 +819,46 @@ class CompetitionEngine {
     return { success: true, challenge: ch };
   }
 
+  public adminRestartTeam(teamId: string) {
+    const team = this.store.teams[teamId];
+    if (!team) return { success: false, error: "Team not found" };
+
+    // Reset team summary
+    team.status = "WAITING";
+    team.total_score = 0;
+    team.total_time_ms = 0;
+    team.active_session_id = undefined;
+
+    // Reset challenges for this team
+    if (!this.store.challenges[teamId]) {
+      this.store.challenges[teamId] = {} as any;
+    }
+    (["z1", "z2", "z3", "z4", "z5"] as ChallengeId[]).forEach((zid) => {
+      this.store.challenges[teamId][zid] = createInitialChallenge(teamId, zid);
+    });
+
+    // Invalidate old active sessions for this team
+    Object.values(this.store.sessions).forEach((s) => {
+      if (s.team_id === teamId) {
+        s.status = "COMPLETED";
+      }
+    });
+
+    // Clear score events and violations for this team
+    this.store.scoreEvents = this.store.scoreEvents.filter((e) => e.team_id !== teamId);
+    this.store.violations = this.store.violations.filter((v) => v.team_id !== teamId);
+
+    // Clear continuation codes for this team
+    Object.keys(this.store.continuationCodes).forEach((k) => {
+      if (this.store.continuationCodes[k].team_id === teamId) {
+        delete this.store.continuationCodes[k];
+      }
+    });
+
+    this.saveState();
+    return { success: true, team, message: `Team ${team.team_name} successfully reset to 0 points.` };
+  }
+
   public async getAdminLiveOverview() {
     await this.hydrateFromSupabaseAsync();
     return {
