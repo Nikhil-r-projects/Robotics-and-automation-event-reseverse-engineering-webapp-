@@ -23,10 +23,10 @@ Before clicking **Deploy**, scroll down to **"Environment variables"** (or go to
 
 | Key | Value | Description |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://ovtrwgopphgkcbckbcct.supabase.co` | Supabase Cloud REST URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im92dHJ3Z29wcGhna2NiY2tiY2N0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0ODI3NzMsImV4cCI6MjEwNzA1ODc3M30.B_NfIhEbcfIlTug5EdAPzX3ElWfWnM8Msimt1L7cdh0` | Supabase Client Anon Key |
-| `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im92dHJ3Z29wcGhna2NiY2tiY2N0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTQ4Mjc3MywiZXhwIjoyMTA3MDU4NzczfQ.hxO4EAE7xgw1ltFRMWqNMZdrblyMGN97bmjTdW-0u0o` | Server-side sync key |
-| `DATABASE_URL` | `postgresql://postgres:Suma%401213802@db.ovtrwgopphgkcbckbcct.supabase.co:5432/postgres` | PostgreSQL connection string |
+| `NEXT_PUBLIC_SUPABASE_URL` | *(Copy value from your `.env.local`)* | Supabase Cloud REST URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *(Copy value from your `.env.local`)* | Supabase Client Anon Key |
+| `SUPABASE_SERVICE_ROLE_KEY` | *(Copy value from your `.env.local`)* | Server-side sync key |
+| `DATABASE_URL` | *(Copy value from your `.env.local`)* | PostgreSQL connection string |
 
 5. Click **"Deploy site"**. Netlify will build and deploy the application in under 2 minutes!
 
