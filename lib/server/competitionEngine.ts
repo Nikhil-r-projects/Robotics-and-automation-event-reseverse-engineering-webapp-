@@ -163,27 +163,32 @@ class CompetitionEngine {
     return initialStore;
   }
 
-  private saveState(customStore?: CompetitionStore) {
-    try {
-      if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-      }
-      const dataToSave = customStore || this.store;
-      const serializable = {
-        ...dataToSave,
-        adminTokens: Array.from(dataToSave.adminTokens),
-      };
-      fs.writeFileSync(DATA_FILE, JSON.stringify(serializable, null, 2), "utf-8");
-      this.syncToSupabaseAsync(dataToSave);
-    } catch (e) {
-      console.error("Failed to persist state:", e);
-    }
-  }
+  private lastHydratedAt = 0;
 
-  public async hydrateFromSupabaseAsync() {
+  public async hydrateFromSupabaseAsync(force = false) {
     try {
+      if (!force && Date.now() - this.lastHydratedAt < 2000) {
+        return;
+      }
+
       const client = getSupabaseServerClient();
       if (!client) return;
+
+      const { data: storeRow } = await client
+        .from("competition_store")
+        .select("data")
+        .eq("id", "live_state")
+        .single();
+
+      if (storeRow?.data) {
+        const parsed = storeRow.data as CompetitionStore;
+        this.store = {
+          ...parsed,
+          adminTokens: new Set(parsed.adminTokens || []),
+        };
+        this.lastHydratedAt = Date.now();
+        return;
+      }
 
       const { data: teamsData, error } = await client.from("teams").select("*");
       if (error || !teamsData || teamsData.length === 0) return;
@@ -198,9 +203,50 @@ class CompetitionEngine {
           if (row.team_name) matchingTeam.team_name = row.team_name;
         }
       });
+      this.lastHydratedAt = Date.now();
     } catch {
       // Non-blocking
     }
+  }
+
+  public async saveStateAsync(customStore?: CompetitionStore) {
+    try {
+      const dataToSave = customStore || this.store;
+      const serializable = {
+        ...dataToSave,
+        adminTokens: Array.from(dataToSave.adminTokens),
+      };
+
+      try {
+        if (!fs.existsSync(DATA_DIR)) {
+          fs.mkdirSync(DATA_DIR, { recursive: true });
+        }
+        fs.writeFileSync(DATA_FILE, JSON.stringify(serializable, null, 2), "utf-8");
+      } catch {
+        // Read-only filesystem fallback in serverless
+      }
+
+      const client = getSupabaseServerClient();
+      if (client) {
+        await client.from("competition_store").upsert(
+          {
+            id: "live_state",
+            data: serializable,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" }
+        );
+        await this.syncToSupabaseAsync(dataToSave);
+      }
+    } catch (e) {
+      console.error("Failed to persist state:", e);
+    }
+  }
+
+  private saveState(customStore?: CompetitionStore) {
+    this.saveStateAsync(customStore).catch((e) =>
+      console.error("Async saveState error:", e)
+    );
   }
 
   private async syncToSupabaseAsync(customStore?: CompetitionStore) {
@@ -226,7 +272,8 @@ class CompetitionEngine {
   // ============================================
   // TEAM AUTHENTICATION (FULLY CASE-INSENSITIVE)
   // ============================================
-  public authenticateTeam(teamNumber: string, teamName: string, accessCode: string) {
+  public async authenticateTeam(teamNumber: string, teamName: string, accessCode: string) {
+    await this.hydrateFromSupabaseAsync();
     const rawNumber = (teamNumber || "").trim();
     const paddedNumber = rawNumber.padStart(2, "0");
     const strippedNumber = rawNumber.replace(/^0+/, "");
@@ -295,7 +342,7 @@ class CompetitionEngine {
     team.status = "ACTIVE";
     team.active_session_id = sessionId;
     this.store.sessions[sessionId] = newSession;
-    this.saveState();
+    await this.saveStateAsync();
 
     return { success: true, session: newSession, team };
   }
@@ -303,7 +350,8 @@ class CompetitionEngine {
   // ============================================
   // CONTINUATION CODE REDEMPTION (CASE-INSENSITIVE)
   // ============================================
-  public redeemContinuation(teamNumber: string, teamName: string, continuationCode: string) {
+  public async redeemContinuation(teamNumber: string, teamName: string, continuationCode: string) {
+    await this.hydrateFromSupabaseAsync();
     const rawNumber = (teamNumber || "").trim();
     const paddedNumber = rawNumber.padStart(2, "0");
     const strippedNumber = rawNumber.replace(/^0+/, "");
@@ -361,7 +409,7 @@ class CompetitionEngine {
     team.status = "ACTIVE";
     team.active_session_id = sessionId;
     this.store.sessions[sessionId] = restoredSession;
-    this.saveState();
+    await this.saveStateAsync();
 
     return { success: true, session: restoredSession, team };
   }

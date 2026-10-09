@@ -7,6 +7,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: false }, { status: 401 });
   }
 
+  await competitionEngine.hydrateFromSupabaseAsync();
   const { currentRoute } = await req.json().catch(() => ({ currentRoute: "/arena" }));
   const result = competitionEngine.heartbeat(sessionId, currentRoute || "/arena");
 

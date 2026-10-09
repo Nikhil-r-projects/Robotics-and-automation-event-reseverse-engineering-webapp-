@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = competitionEngine.authenticateTeam(teamNumber, teamName, accessCode);
+    const result = await competitionEngine.authenticateTeam(teamNumber, teamName, accessCode);
 
     if (!result.success || !result.session) {
       return NextResponse.json(

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = competitionEngine.redeemContinuation(teamNumber, teamName, continuationCode);
+    const result = await competitionEngine.redeemContinuation(teamNumber, teamName, continuationCode);
 
     if (!result.success || !result.session) {
       return NextResponse.json(

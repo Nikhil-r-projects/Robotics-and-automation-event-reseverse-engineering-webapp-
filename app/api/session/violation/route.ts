@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
   const type = body.type || "TAB_HIDDEN";
   const metadata = body.metadata || {};
 
+  await competitionEngine.hydrateFromSupabaseAsync();
   const result = competitionEngine.registerViolation(sessionId, type, metadata);
 
   return NextResponse.json({

@@ -8,7 +8,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
 
-  const session = competitionEngine.getSession(sessionId);
+  await competitionEngine.hydrateFromSupabaseAsync();
+  let session = competitionEngine.getSession(sessionId);
+  if (!session) {
+    await competitionEngine.hydrateFromSupabaseAsync(true);
+    session = competitionEngine.getSession(sessionId);
+  }
+
   if (!session) {
     return NextResponse.json({ authenticated: false, error: "Session not found" }, { status: 401 });
   }

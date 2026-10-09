@@ -16,7 +16,13 @@ export function useArenaSession() {
   // Fetch session state
   const refreshState = useCallback(async () => {
     try {
-      const res = await fetch("/api/session/state");
+      let res = await fetch("/api/session/state");
+      if (!res.ok && res.status === 401) {
+        // Quick retry once to protect against serverless cold-start / propagation latency
+        await new Promise((r) => setTimeout(r, 600));
+        res = await fetch("/api/session/state");
+      }
+
       if (!res.ok) {
         if (pathname !== "/auth" && pathname !== "/eliminated" && !pathname.startsWith("/admin")) {
           router.replace("/auth");
@@ -33,6 +39,10 @@ export function useArenaSession() {
 
         if (data.session.status === "ELIMINATED" && pathname !== "/eliminated") {
           router.replace("/eliminated");
+        }
+      } else {
+        if (pathname !== "/auth" && pathname !== "/eliminated" && !pathname.startsWith("/admin")) {
+          router.replace("/auth");
         }
       }
     } catch (err) {
