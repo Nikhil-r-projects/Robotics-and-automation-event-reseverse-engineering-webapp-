@@ -569,11 +569,11 @@ class CompetitionEngine {
       ],
       z4: [
         "Eight bits map to one standard ASCII character. Look for a 'HEX:' prefix.",
-        "Inspect the DOM comments if you cannot recall Rivo's exact name.",
+        "Inspect the DOM comments or system intro if you cannot recall the companion's exact name.",
       ],
       z5: [
         "Do inspect or search: Right-click anywhere and choose 'Inspect' (or press F12 / Ctrl+Shift+I). Search the page elements / source for 'frequency' or data attributes (like data-bx-frequency) to find the hidden carrier value.",
-        "Combine kernel-frequency for password: Join the Kernel ID and anomalous Frequency with a hyphen in the format [KERNEL]-[FREQUENCY] (e.g. 0xBX01-1475).",
+        "Combine kernel-frequency for password: Join the Kernel ID and anomalous Frequency with a hyphen in the format [KERNEL]-[FREQUENCY] (e.g. 0xBX99-2400).",
       ],
     };
 

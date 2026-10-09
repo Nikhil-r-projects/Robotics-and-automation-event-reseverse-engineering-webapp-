@@ -259,7 +259,7 @@ export default function BinaryVaultPage() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <input
                   type="text"
-                  placeholder="ENTER DECODED ASCII (e.g. HEX: 46 4C...)"
+                  placeholder="ENTER DECODED ASCII (e.g. HEX: 41 42 43...)"
                   value={stage1Input}
                   onChange={(e) => setStage1Input(e.target.value.toUpperCase())}
                   className="flex-1 px-4 py-2.5 bg-[#182030] border border-[#232b3e] focus:border-[#ff7a00] rounded text-sm text-white font-mono uppercase tracking-wider outline-none"
@@ -318,7 +318,7 @@ export default function BinaryVaultPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
                   <span className="text-xs font-mono text-[#10b981] uppercase font-bold tracking-wider">
-                    STAGE 3 :: RIVO IDENTITY VERIFICATION (+30 PTS)
+                    STAGE 3 :: COMPANION IDENTITY VERIFICATION (+30 PTS)
                   </span>
                   <p className="text-sm font-semibold text-white italic">
                     &ldquo;Do you remember me?&rdquo;
@@ -331,7 +331,7 @@ export default function BinaryVaultPage() {
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <input
                     type="text"
-                    placeholder="WHO AM I? (NAME OF COMPANION)"
+                    placeholder="WHO AM I? (ENTER COMPANION CALLSIGN)"
                     value={stage3Input}
                     onChange={(e) => setStage3Input(e.target.value.toUpperCase())}
                     className="flex-1 px-4 py-2.5 bg-[#182030] border border-[#232b3e] focus:border-[#10b981] rounded text-sm text-white font-mono uppercase tracking-wider outline-none"

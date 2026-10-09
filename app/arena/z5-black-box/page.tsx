@@ -236,7 +236,7 @@ export default function BlackBoxPage() {
                 <div className="text-xs font-mono text-[#94a3b8] space-y-1">
                   <div>• BUS STATUS: PROBING BUS ACTIVE</div>
                   <div>• MEMORY ENCLAVE: ISOLATED</div>
-                  <div>• DEVICE KERNEL SIG: <span className="text-white font-bold">{puzzle?.kernelHash || "0xBX01"}</span></div>
+                  <div>• DEVICE KERNEL SIG: <span className="text-white font-bold">{puzzle?.kernelHash || "0xBX00"}</span></div>
                   <div>• ANOMALOUS CARRIER: <span className="text-[#ef4444] animate-pulse">[MASKED — SEARCH ENVIRONMENT]</span></div>
                 </div>
               </div>
@@ -275,7 +275,7 @@ export default function BlackBoxPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
-                placeholder="e.g. 0xBX01-1475"
+                placeholder="e.g. 0xBX99-2400"
                 value={activationToken}
                 onChange={(e) => setActivationToken(e.target.value.toUpperCase())}
                 className="flex-1 px-4 py-3 bg-[#0b0e14] border border-[#232b3e] focus:border-[#ff7a00] rounded text-sm text-white font-mono uppercase tracking-wider outline-none"

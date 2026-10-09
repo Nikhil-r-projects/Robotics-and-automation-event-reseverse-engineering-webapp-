@@ -500,7 +500,7 @@ export default function DeadSignalPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
-                placeholder="e.g. VECTOR"
+                placeholder="e.g. BEACON"
                 value={userDecodedText}
                 onChange={(e) => setUserDecodedText(e.target.value.toUpperCase())}
                 className="flex-1 px-4 py-3 bg-[#0b0e14] border border-[#232b3e] focus:border-[#ff7a00] focus:ring-1 focus:ring-[#ff7a00] rounded text-base text-white font-mono uppercase tracking-widest outline-none"
