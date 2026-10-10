@@ -11,7 +11,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<"credentials" | "continuation">("credentials");
   const [teamNumber, setTeamNumber] = useState("");
   const [teamName, setTeamName] = useState("");
-  const [accessCode, setAccessCode] = useState("");
+  const [accessCode, setAccessCode] = useState("IEEE");
   const [continuationCode, setContinuationCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -78,8 +78,8 @@ export default function AuthPage() {
             <h1 className="text-2xl font-bold uppercase text-white tracking-wide mt-0.5">
               REVERSE ENGINEER THIS
             </h1>
-            <p className="text-xs text-[#94a3b8] font-mono mt-1">
-              DIGITAL ARENA • ROUND 03
+            <p className="text-xs text-[#00f0ff] font-mono mt-1 font-semibold">
+              OPEN ARENA • UNIVERSAL CODE &ldquo;IEEE&rdquo;
             </p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function AuthPage() {
                 : "text-[#94a3b8] hover:text-white"
             }`}
           >
-            TEAM CREDENTIALS
+            TEAM REGISTRATION
           </button>
           <button
             type="button"
@@ -121,14 +121,17 @@ export default function AuthPage() {
         {/* Auth Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[11px] font-mono text-[#94a3b8] uppercase mb-1.5 flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-[#ff7a00]" />
-              <span>TEAM NUMBER</span>
+            <label className="block text-[11px] font-mono text-[#94a3b8] uppercase mb-1.5 flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Terminal className="w-3.5 h-3.5 text-[#ff7a00]" />
+                <span>TEAM NUMBER</span>
+              </span>
+              <span className="text-[10px] text-[#ff7a00] normal-case">(Open for any number)</span>
             </label>
             <input
               type="text"
               required
-              placeholder="e.g. 01, 02, 03"
+              placeholder="e.g. 01, 02, 06, 12, 42..."
               value={teamNumber}
               onChange={(e) => setTeamNumber(e.target.value)}
               className="w-full px-3.5 py-2.5 bg-[#0b0e14] border border-[#232b3e] focus:border-[#ff7a00] focus:ring-1 focus:ring-[#ff7a00] rounded text-sm text-white font-mono placeholder-[#64748b] transition-colors outline-none"
@@ -141,12 +144,12 @@ export default function AuthPage() {
                 <Shield className="w-3.5 h-3.5 text-[#00f0ff]" />
                 <span>TEAM NAME</span>
               </span>
-              <span className="text-[10px] text-[#64748b] normal-case">(case-insensitive)</span>
+              <span className="text-[10px] text-[#64748b] normal-case">(Your team name)</span>
             </label>
             <input
               type="text"
               required
-              placeholder="e.g. anything, questers, milton, rocket, meowmewo"
+              placeholder="e.g. Byte Busters, Cyber Knights, anything..."
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               className="w-full px-3.5 py-2.5 bg-[#0b0e14] border border-[#232b3e] focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff] rounded text-sm text-white font-mono placeholder-[#64748b] transition-colors outline-none"
@@ -160,16 +163,19 @@ export default function AuthPage() {
                   <KeyRound className="w-3.5 h-3.5 text-[#10b981]" />
                   <span>COMPETITION ACCESS CODE</span>
                 </span>
-                <span className="text-[10px] text-[#64748b] normal-case">(case-insensitive)</span>
+                <span className="text-[10px] text-[#10b981] font-bold normal-case">Code: IEEE</span>
               </label>
               <input
                 type="text"
                 required
-                placeholder="e.g. RAS-8K2P or ras-8k2p"
+                placeholder="IEEE"
                 value={accessCode}
-                onChange={(e) => setAccessCode(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#0b0e14] border border-[#232b3e] focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] rounded text-sm text-white font-mono placeholder-[#64748b] transition-colors outline-none tracking-wider"
+                onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                className="w-full px-3.5 py-2.5 bg-[#0b0e14] border border-[#10b981]/50 focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] rounded text-sm text-white font-mono placeholder-[#64748b] transition-colors outline-none tracking-widest font-bold"
               />
+              <p className="text-[10px] text-[#10b981] font-mono mt-1 flex items-center gap-1">
+                ✓ Universal access code is set to &ldquo;IEEE&rdquo; for all teams.
+              </p>
             </div>
           ) : (
             <div>

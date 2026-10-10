@@ -40,13 +40,13 @@ interface CompetitionStore {
   adminTokens: Set<string>;
 }
 
-// Initial 5 Provisioned Competition Teams
+// Initial 5 Provisioned Competition Teams (Universal Code IEEE)
 const INITIAL_TEAMS: Team[] = [
   {
     id: "team-01",
     team_number: "01",
     team_name: "anything",
-    access_code: "RAS-8K2P",
+    access_code: "IEEE",
     status: "WAITING",
     total_score: 0,
     total_time_ms: 0,
@@ -56,7 +56,7 @@ const INITIAL_TEAMS: Team[] = [
     id: "team-02",
     team_number: "02",
     team_name: "questers",
-    access_code: "RAS-3M7X",
+    access_code: "IEEE",
     status: "WAITING",
     total_score: 0,
     total_time_ms: 0,
@@ -66,7 +66,7 @@ const INITIAL_TEAMS: Team[] = [
     id: "team-03",
     team_number: "03",
     team_name: "milton",
-    access_code: "RAS-9Q4V",
+    access_code: "IEEE",
     status: "WAITING",
     total_score: 0,
     total_time_ms: 0,
@@ -76,7 +76,7 @@ const INITIAL_TEAMS: Team[] = [
     id: "team-04",
     team_number: "04",
     team_name: "rocket",
-    access_code: "RAS-5T1L",
+    access_code: "IEEE",
     status: "WAITING",
     total_score: 0,
     total_time_ms: 0,
@@ -86,7 +86,7 @@ const INITIAL_TEAMS: Team[] = [
     id: "team-05",
     team_number: "05",
     team_name: "meowmewo",
-    access_code: "RAS-2W8Z",
+    access_code: "IEEE",
     status: "WAITING",
     total_score: 0,
     total_time_ms: 0,
@@ -186,23 +186,50 @@ class CompetitionEngine {
           ...parsed,
           adminTokens: new Set(parsed.adminTokens || []),
         };
-        this.lastHydratedAt = Date.now();
-        return;
       }
 
+      // Reconcile and merge with Supabase teams table so all registered teams are present
       const { data: teamsData, error } = await client.from("teams").select("*");
-      if (error || !teamsData || teamsData.length === 0) return;
+      if (!error && teamsData && teamsData.length > 0) {
+        teamsData.forEach((row) => {
+          const matchingTeam = Object.values(this.store.teams).find(
+            (t) => t.team_number === row.team_number
+          );
+          if (matchingTeam) {
+            if (typeof row.total_score === "number" && row.total_score > matchingTeam.total_score) {
+              matchingTeam.total_score = row.total_score;
+            }
+            if (row.status) matchingTeam.status = row.status;
+            if (row.team_name) matchingTeam.team_name = row.team_name;
+          } else {
+            const newTeamId = `team-${row.team_number}`;
+            this.store.teams[newTeamId] = {
+              id: newTeamId,
+              team_number: row.team_number,
+              team_name: row.team_name || `Team ${row.team_number}`,
+              access_code: row.access_code_hash || "IEEE",
+              status: row.status || "ACTIVE",
+              total_score: row.total_score || 0,
+              total_time_ms: 0,
+              created_at: new Date().toISOString(),
+            };
+          }
+        });
+      }
 
-      teamsData.forEach((row) => {
-        const matchingTeam = Object.values(this.store.teams).find(
-          (t) => t.team_number === row.team_number
-        );
-        if (matchingTeam) {
-          if (typeof row.total_score === "number") matchingTeam.total_score = row.total_score;
-          if (row.status) matchingTeam.status = row.status;
-          if (row.team_name) matchingTeam.team_name = row.team_name;
+      // Ensure all teams have challenge instances initialized
+      Object.values(this.store.teams).forEach((t) => {
+        if (!this.store.challenges[t.id]) {
+          this.store.challenges[t.id] = {
+            z1: createInitialChallenge(t.id, "z1"),
+            z2: createInitialChallenge(t.id, "z2"),
+            z3: createInitialChallenge(t.id, "z3"),
+            z4: createInitialChallenge(t.id, "z4"),
+            z5: createInitialChallenge(t.id, "z5"),
+          };
         }
       });
+
       this.lastHydratedAt = Date.now();
     } catch {
       // Non-blocking
@@ -263,65 +290,85 @@ class CompetitionEngine {
         total_score: t.total_score,
       }));
 
-      await client.from("teams").upsert(teams, { onConflict: "team_number" });
+      const { error } = await client.from("teams").upsert(teams, { onConflict: "team_number" });
+      if (error) {
+        console.error("Supabase teams sync notice:", error.message);
+      }
     } catch {
       // Non-blocking background sync notice
     }
   }
 
   // ============================================
-  // TEAM AUTHENTICATION (FULLY CASE-INSENSITIVE)
+  // OPEN TEAM REGISTRATION & AUTHENTICATION (CODE: IEEE)
   // ============================================
   public async authenticateTeam(teamNumber: string, teamName: string, accessCode: string) {
     await this.hydrateFromSupabaseAsync();
     const rawNumber = (teamNumber || "").trim();
-    const paddedNumber = rawNumber.padStart(2, "0");
+    const normalizedNumber = /^\d$/.test(rawNumber) ? rawNumber.padStart(2, "0") : rawNumber;
     const strippedNumber = rawNumber.replace(/^0+/, "");
-    const normName = (teamName || "").trim().toLowerCase();
+    const trimmedName = (teamName || "").trim();
     const normAccess = (accessCode || "").trim().toLowerCase();
 
-    const team = Object.values(this.store.teams).find(
+    // Universal Access Code is "IEEE" (case-insensitive)
+    let team = Object.values(this.store.teams).find(
       (t) =>
-        t.team_number === paddedNumber ||
-        t.team_number.replace(/^0+/, "") === strippedNumber
+        t.team_number === normalizedNumber ||
+        t.team_number === rawNumber ||
+        (strippedNumber && t.team_number.replace(/^0+/, "") === strippedNumber) ||
+        t.team_number.toLowerCase() === rawNumber.toLowerCase()
     );
 
-    if (!team) {
-      return { success: false, error: "Team Number not recognized." };
-    }
+    const isCodeValid =
+      normAccess === "ieee" ||
+      (team && team.access_code && team.access_code.trim().toLowerCase() === normAccess);
 
-    if (team.team_name.trim().toLowerCase() !== normName) {
-      return { success: false, error: "Team Name does not match team records." };
-    }
-
-    if (team.access_code.trim().toLowerCase() !== normAccess) {
-      return { success: false, error: "Invalid competition access code." };
-    }
-
-    if (team.status === "COMPLETED") {
-      return { success: false, error: "Team has already finished the competition." };
-    }
-
-    if (team.status === "ELIMINATED") {
+    if (!isCodeValid) {
       return {
         success: false,
-        error: "Team is currently ELIMINATED. Use your admin continuation code to resume.",
+        error: "Invalid access code. Please use 'IEEE' to register and enter the arena.",
       };
     }
 
-    // Single Active Session rule:
-    // If another browser session is currently active and heartbeat within last 30s
-    if (team.active_session_id) {
-      const activeSession = this.store.sessions[team.active_session_id];
-      if (activeSession && activeSession.status === "ACTIVE") {
-        const lastSeen = new Date(activeSession.last_seen_at).getTime();
-        const diffSeconds = (Date.now() - lastSeen) / 1000;
-        if (diffSeconds < 25) {
-          return {
-            success: false,
-            error: "Another active browser session is currently engaged for this team.",
-          };
-        }
+    // Dynamic Team Registration: if team does not exist yet, register immediately!
+    if (!team) {
+      const safeId = `team-${normalizedNumber.toLowerCase().replace(/[^a-z0-9_-]/g, "") || Date.now()}`;
+      team = {
+        id: safeId,
+        team_number: normalizedNumber,
+        team_name: trimmedName || `Team ${normalizedNumber}`,
+        access_code: "IEEE",
+        status: "ACTIVE",
+        total_score: 0,
+        total_time_ms: 0,
+        created_at: new Date().toISOString(),
+      };
+      this.store.teams[team.id] = team;
+      this.store.challenges[team.id] = {
+        z1: createInitialChallenge(team.id, "z1"),
+        z2: createInitialChallenge(team.id, "z2"),
+        z3: createInitialChallenge(team.id, "z3"),
+        z4: createInitialChallenge(team.id, "z4"),
+        z5: createInitialChallenge(team.id, "z5"),
+      };
+    } else {
+      // Existing team: update name if provided and ensure access code is IEEE
+      if (trimmedName) {
+        team.team_name = trimmedName;
+      }
+      team.access_code = "IEEE";
+      if (!this.store.challenges[team.id]) {
+        this.store.challenges[team.id] = {
+          z1: createInitialChallenge(team.id, "z1"),
+          z2: createInitialChallenge(team.id, "z2"),
+          z3: createInitialChallenge(team.id, "z3"),
+          z4: createInitialChallenge(team.id, "z4"),
+          z5: createInitialChallenge(team.id, "z5"),
+        };
+      }
+      // Re-activate so participants can try freely
+      if (team.status === "ELIMINATED" || team.status === "WAITING") {
+        team.status = "ACTIVE";
       }
     }
 
@@ -342,6 +389,8 @@ class CompetitionEngine {
     team.status = "ACTIVE";
     team.active_session_id = sessionId;
     this.store.sessions[sessionId] = newSession;
+
+    // Immediately persist both state JSON and teams table to Supabase database!
     await this.saveStateAsync();
 
     return { success: true, session: newSession, team };
@@ -474,8 +523,16 @@ class CompetitionEngine {
   // CHALLENGE STATE & UNLOCK CHECK
   // ============================================
   public getTeamChallenges(teamId: string) {
+    if (!this.store.challenges[teamId]) {
+      this.store.challenges[teamId] = {
+        z1: createInitialChallenge(teamId, "z1"),
+        z2: createInitialChallenge(teamId, "z2"),
+        z3: createInitialChallenge(teamId, "z3"),
+        z4: createInitialChallenge(teamId, "z4"),
+        z5: createInitialChallenge(teamId, "z5"),
+      };
+    }
     const challenges = this.store.challenges[teamId];
-    if (!challenges) return null;
 
     // Check Z4/Z5 unlock condition: Any 2 of Z1, Z2, Z3 completed
     const completedInitial = [challenges.z1, challenges.z2, challenges.z3].filter(
